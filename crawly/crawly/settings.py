@@ -11,7 +11,8 @@ BOT_NAME = 'wp-crawly'
 SPIDER_MODULES = ['crawly.spiders']
 NEWSPIDER_MODULE = 'crawly.spiders'
 ITEM_PIPELINES = [
-    'crawly.pipelines.CrawlyPipeline'
+    'crawly.pipelines.CrawlyPipeline',
+    'crawly.pipelines.URLPipeline'
 ]
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

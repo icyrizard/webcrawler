@@ -11,7 +11,7 @@ class StartpaginaCrawlySpider(CrawlSpider):
     name = "startpagina-crawly"
 
     start_urls = ["http://webdesign.startpagina.nl/"]
-    rules = (Rule (SgmlLinkExtractor(allow=r"^http://([a-zA-Z0-9-\.])+\.nl(/)+$",
+    rules = (Rule (SgmlLinkExtractor(allow=r"^http://([a-zA-Z0-9-\.])+\.nl(/)?$",
         deny=r".*mailto:.*", tags="a", unique=True),
         callback="parse_items", follow=True),)
 

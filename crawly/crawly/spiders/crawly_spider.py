@@ -9,8 +9,9 @@ class WPCrawlySpider(BaseSpider):
     name = "wp-crawly"
 
     # patterns, for global use
-    wp_content = re.compile(r"wp-content")
+    wp_content = re.compile(r"wp-content|wp-includes")
     wp_theme = re.compile(r"wp-content/themes/(?P<theme>[a-zA-Z0-9_\-\s\.]+)")
+
     #allowed_domains = ["dmoz.org"]
 
     #TODO: From database?
@@ -35,6 +36,7 @@ class WPCrawlySpider(BaseSpider):
                 if theme_name:
                     item["theme_name"] = theme_name.group('theme')
 
+            print href_link
             ## is wordpress ?
             if self.wp_content.search(href_link):
                 # set to true if wordpress
@@ -76,10 +78,10 @@ class WPCrawlySpider(BaseSpider):
         item['wordpress'] = False
 
         # start checking links
-        item = self._parse_links(hxs, item)
+        self._parse_links(hxs, item)
 
-        # didnt work, check all script includes
+        # if that did'nt work, check all script includes
         if not item['wordpress']:
-            item = self._parse_script_includes(hxs, item)
+            self._parse_script_includes(hxs, item)
         return item
 

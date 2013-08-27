@@ -13,3 +13,10 @@ class CrawlyItem(Item):
     link = Field()
     wordpress = Field()
 
+class URLItem(Item):
+    source = Field()
+    url = Field()
+    country_code = Field()
+
+
+
