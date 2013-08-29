@@ -1,3 +1,5 @@
+from models import db
+
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
@@ -17,6 +19,7 @@ class URLPipeline(object):
     """store information about source urls to be processed by other spiders"""
     def __init__(self):
         pass
+        ## set session and activate it by calling it
 
     def process_item(self, item, spider):
         if 'URL' not in getattr(spider, "pipelines"):

@@ -1,67 +1,88 @@
+from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
+from settings import DATABASE_LIST, DATABASE
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+def create_URI():
+    """Builds and returns a database URI, based on the flask / SQLAlchemy
+    format: dialect+driver://username:password@host:port/database
+    """
+    if DATABASE not in DATABASE_LIST:
+        raise KeyError("db name %s not in DATABASE_LIST in settings.py" % \
+                DATABASE)
 
-class Domain(Base):
+    ## get database parameters
+    db = DATABASE_LIST[DATABASE]
+    dialect = db["DIALECT"]
+    driver =  "+" + db["DRIVER"] if db["DRIVER"] else ""
+    user = db["USER"]
+    password = db["PASSWORD"]
+    host = db["HOST"]
+    port = ":" + db["PORT"] if db["PORT"] else ""
+    name = db["NAME"]
+
+    return "%s%s://%s:%s@%s%s/%s" % (dialect, driver, user, password,
+            host, port, name)
+
+# flask related initiatializations
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = create_URI()
+db = SQLAlchemy(app)
+print db
+
+# models
+class Domain(db.Model):
     __tablename__ = 'tb_domain'
-    id = Column(Integer, primary_key=True, unique=True)
-    url_domain = Column(String(512), unique=True, nullable=False)
-    status = Column(Boolean(), nullable=True)
-    #status = Column(Integer(), nullable=True)
-    remark = Column(String(128), nullable=True)
-    date_created = Column(DateTime(), nullable=False)
+    id = db.Column(Integer, primary_key=True, unique=True)
+    url_domain = db.Column(String(128), unique=True, nullable=False)
+    status = db.Column(Boolean(), nullable=True)
+    #status = db.Column(Integer(), nullable=True)
+    remark = db.Column(String(128), nullable=True)
+    date_created = db.Column(DateTime(), nullable=False)
 
     def __repr__(self):
         return """<tb_domain> url_domain: %s status: %s remark: %s date_created: %s """ % (self.url_domain, self.status, self.remark, self.date_created)
     # changed what?, just delete and add a new one?
-    #date_changed = Column(DateTime(), nullable=False)
+    #date_changed = db.Column(DateTime(), nullable=False)
 
-class SearchDomain(Base):
+class SearchDomain(db.Model):
     __tablename__ = 'tb_searchdomain'
-    id = Column(Integer, primary_key=True)
-    domain_id = Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
+
+    id = db.Column(Integer, primary_key=True)
+    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
     domain = relationship("Domain")
 
     # dont know the type
-    search_domain = Column(String(128), nullable=False)
+    search_domain = db.Column(String(128), nullable=False)
 
     def __repr__(self):
         return """<tb_searchdomain> search_domain: %s"""% (self.search_domain)
 
-class Template(Base):
+class Template(db.Model):
     __tablename__ = "tb_template"
-    id = Column(Integer, primary_key=True)
-    domain_id = Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
+    id = db.Column(Integer, primary_key=True)
+    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
     domain = relationship("Domain")
-    template = Column(String(64), nullable=False)
-    version = Column(String(64), nullable=True)
+    template = db.Column(String(64), nullable=False)
+    version = db.Column(String(64), nullable=True)
 
     def __repr__(self):
         return \
         """<tb_searchdomain> template: %s, version: %s""" \
         % (self.template, self.version)
 
-class WPTheme(Base):
+class WPTheme(db.Model):
     __tablename__ = "tb_wptheme"
-    id = Column(Integer, primary_key=True)
-    domain_id = Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
+    id = db.Column(Integer, primary_key=True)
+    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
     domain = relationship("Domain")
-    date_searched = Column(DateTime(), nullable=False)
-    theme = Column(String(64))
+    date_searched = db.Column(DateTime(), nullable=False)
+    theme = db.Column(String(64))
 
     def __repr__(self):
         return \
         """<tb_searchdomain> template: %s, version: %s"""\
         %  (self.date_searched, self.theme)
-
-
-
-
-
-
-
-
-
 

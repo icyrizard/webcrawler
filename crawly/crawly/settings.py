@@ -17,3 +17,21 @@ ITEM_PIPELINES = [
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'crawly (+http://www.yourdomain.com)'
+
+
+## database settings needed to create the connection through SQLAlchemy
+## http://docs.sqlalchemy.org/en/rel_0_8/core/engines.html#sqlalchemy.create_engine
+DATABASE_LIST = {
+    "development" : {
+        "DIALECT": "postgresql", # options are: mysql, postgresql, oracle, sqlite
+        "DRIVER":"", # if empty, SQLAlchemy uses default driver for dialect
+        "NAME" : "webcrawler",
+        "USER" : "richard",
+        "PASSWORD": "",
+        "HOST": "localhost",
+        "PORT": "",
+    }
+}
+
+# use the name of the database in DATABASE_LIST
+DATABASE = "development"
