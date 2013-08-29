@@ -5,11 +5,11 @@ A commandline webcrawler created with scrapy. It will index websites and collect
 
 Usage
 =========
->wordpress crawler
-scrapy crawl wp-crawly
+### wordpress crawler
+:scrapy crawl wp-crawly
 
->startpagina crawler
-scrapy crawl startpagina-crawly
+###startpagina crawler
+:scrapy crawl startpagina-crawly
 
 
 
