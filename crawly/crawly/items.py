@@ -6,17 +6,15 @@
 from scrapy.item import Item, Field
 
 class CrawlyItem(Item):
-    # define the fields for your item here like:
-    # name = Field()
-    name = Field()
+    url_domain = Field()
     theme_name = Field()
-    link = Field()
-    wordpress = Field()
+    template = Field()
 
 class URLItem(Item):
     source = Field()
     url = Field()
     country_code = Field()
+    status = Field()
 
 
 

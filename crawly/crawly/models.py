@@ -4,6 +4,7 @@ from settings import DATABASE_LIST, DATABASE
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 def create_URI():
     """Builds and returns a database URI, based on the flask / SQLAlchemy
@@ -29,18 +30,18 @@ def create_URI():
 # flask related initiatializations
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = create_URI()
+#app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
-print db
 
 # models
 class Domain(db.Model):
     __tablename__ = 'tb_domain'
     id = db.Column(Integer, primary_key=True, unique=True)
-    url_domain = db.Column(String(128), unique=True, nullable=False)
-    status = db.Column(Boolean(), nullable=True)
-    #status = db.Column(Integer(), nullable=True)
+    url_domain = db.Column(String(512), unique=True, nullable=False, index=True)
+    status_code = db.Column(Integer(), nullable=True)
     remark = db.Column(String(128), nullable=True)
-    date_created = db.Column(DateTime(), nullable=False)
+    date_created = db.Column(DateTime(), nullable=False, default=datetime.now)
+    search_domain = db.Column(String(512), nullable=False)
 
     def __repr__(self):
         return """<tb_domain> url_domain: %s status: %s remark: %s date_created: %s """ % (self.url_domain, self.status, self.remark, self.date_created)
@@ -55,7 +56,6 @@ class SearchDomain(db.Model):
     domain = relationship("Domain")
 
     # dont know the type
-    search_domain = db.Column(String(128), nullable=False)
 
     def __repr__(self):
         return """<tb_searchdomain> search_domain: %s"""% (self.search_domain)
@@ -63,7 +63,8 @@ class SearchDomain(db.Model):
 class Template(db.Model):
     __tablename__ = "tb_template"
     id = db.Column(Integer, primary_key=True)
-    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
+    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"),
+            nullable=False, unique=True)
     domain = relationship("Domain")
     template = db.Column(String(64), nullable=False)
     version = db.Column(String(64), nullable=True)
@@ -76,9 +77,10 @@ class Template(db.Model):
 class WPTheme(db.Model):
     __tablename__ = "tb_wptheme"
     id = db.Column(Integer, primary_key=True)
-    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"), nullable=False)
+    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id"),
+            nullable=False, unique=True)
     domain = relationship("Domain")
-    date_searched = db.Column(DateTime(), nullable=False)
+    date_searched = db.Column(DateTime(), nullable=False, default=datetime.now())
     theme = db.Column(String(64))
 
     def __repr__(self):

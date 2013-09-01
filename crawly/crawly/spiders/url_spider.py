@@ -11,8 +11,12 @@ class StartpaginaCrawlySpider(CrawlSpider):
     name = "startpagina-crawly"
 
     start_urls = ["http://webdesign.startpagina.nl/"]
-    rules = (Rule (SgmlLinkExtractor(allow=r"^http://([a-zA-Z0-9-\.])+\.nl(/)?$",
-        deny=r".*mailto:.*", tags="a", unique=True),
+    rules = (Rule (SgmlLinkExtractor(
+        allow=r"^http://([a-zA-Z0-9-\.])+\.nl(/)?$",
+        deny=r".*mailto:.*",
+        tags="a",
+        unique=True,
+        deny_domains=['hyves.nl', 'facebook.nl', 'google.nl']),
         callback="parse_items", follow=True),)
 
     #def _parse_anchors(self, hxs, item):
@@ -22,12 +26,14 @@ class StartpaginaCrawlySpider(CrawlSpider):
     #    return item
 
     def parse_items(self, response):
-        print response._get_url()
         # html object
+        print response._get_url()
         hxs = HtmlXPathSelector(response)
         item = URLItem()
+
         item['source'] = self.start_urls[0]
         item['url'] = response._get_url()
+        item['status'] = response.status
         item['country_code'] = "NL"
 
         #self._parse_anchors(hxs, item)
