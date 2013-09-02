@@ -27,7 +27,6 @@ class StartpaginaCrawlySpider(CrawlSpider):
 
     def parse_items(self, response):
         # html object
-        print response._get_url()
         hxs = HtmlXPathSelector(response)
         item = URLItem()
 

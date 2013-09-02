@@ -3,10 +3,11 @@ import re
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from crawly.items import CrawlyItem
-from crawly.models import db, Domain
+from crawly.models import db, Domain, Template, WPTheme
 
 def get_urls():
-    for url in db.session.query(Domain).all():
+    for url in db.session.query(Domain).outerjoin(Template).\
+            filter(Template.domain == None).all():
         yield url.url_domain
 
 class WPCrawlySpider(BaseSpider):
