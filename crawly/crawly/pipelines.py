@@ -23,7 +23,10 @@ class CrawlyPipeline(object):
                 if item['theme_name']:
                     site_theme = WPTheme(domain=dmain, theme=item['theme_name'])
                     db.session.add(site_theme)
-                db.session.commit()
+                try:
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()
         return item
 
 class URLPipeline(object):

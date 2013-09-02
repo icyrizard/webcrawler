@@ -16,7 +16,7 @@ class StartpaginaCrawlySpider(CrawlSpider):
         deny=r".*mailto:.*",
         tags="a",
         unique=True,
-        deny_domains=['hyves.nl', 'facebook.nl', 'google.nl']),
+        deny_domains=['hyves.nl', 'facebook.nl', 'google.nl', 'istats.nl']),
         callback="parse_items", follow=True),)
 
     #def _parse_anchors(self, hxs, item):
