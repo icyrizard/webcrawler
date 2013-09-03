@@ -9,6 +9,7 @@ class StartpaginaCrawlySpider(CrawlSpider):
     new urls"""
     pipelines = ['URLPipeline']
     name = "startpagina-crawly"
+    domain_ext = 'nl'
 
     start_urls = ["http://webdesign.startpagina.nl/"]
     rules = (Rule (SgmlLinkExtractor(
@@ -16,7 +17,8 @@ class StartpaginaCrawlySpider(CrawlSpider):
         deny=r".*mailto:.*",
         tags="a",
         unique=True,
-        deny_domains=['hyves.nl', 'facebook.nl', 'google.nl', 'istats.nl']),
+        deny_domains=['hyves.nl', 'facebook.nl', 'google.nl', 'istats.nl', 'goedbegin.nl'
+            'viavoordeel.nl', 'speelgoed-voordeel.nl', 'bestellen-winkel.nl']),
         callback="parse_items", follow=True),)
 
     #def _parse_anchors(self, hxs, item):
@@ -33,7 +35,7 @@ class StartpaginaCrawlySpider(CrawlSpider):
         item['source'] = self.start_urls[0]
         item['url'] = response._get_url()
         item['status'] = response.status
-        item['country_code'] = "NL"
+        item['domain_ext'] = self.domain_ext
 
         #self._parse_anchors(hxs, item)
         return item

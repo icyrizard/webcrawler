@@ -30,8 +30,17 @@ DATABASE_LIST = {
         "PASSWORD": "",
         "HOST": "localhost",
         "PORT": "",
+    },
+    "homepc" : {
+        "DIALECT": "mysql", # options are: mysql, postgresql, oracle, sqlite
+        "DRIVER":"", # if empty, SQLAlchemy uses default driver for dialect
+        "NAME" : "webcrawler",
+        "USER" : "root",
+        "PASSWORD": "3jkfjk",
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }
 
 # use the name of the database in DATABASE_LIST
-DATABASE = "development"
+DATABASE = "homepc"

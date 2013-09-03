@@ -41,52 +41,41 @@ class Domain(db.Model):
     status_code = db.Column(Integer(), nullable=True)
     remark = db.Column(String(128), nullable=True)
     date_created = db.Column(DateTime(), nullable=False, default=datetime.now)
-    search_domain = db.Column(String(512), nullable=False)
+    start_url = db.Column(String(512), nullable=False)
+    domain_ext = db.Column(String(12), nullable=True)
 
-
+    date_changed = db.Column(DateTime(), nullable=True, default=datetime.now)
     def __repr__(self):
-        return """<tb_domain> url_domain: %s status: %s remark: %s date_created: %s """ % (self.url_domain, self.status, self.remark, self.date_created)
+        return """<tb_domain> url_domain: %s status: %s remark: %s date_created: %s """ % (self.url_domain, self.status_code, self.remark, self.date_created)
     # changed what?, just delete and add a new one?
     #date_changed = db.Column(DateTime(), nullable=False)
-
-class SearchDomain(db.Model):
-    __tablename__ = 'tb_searchdomain'
-
-    id = db.Column(Integer, primary_key=True)
-    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id",
-        ondelete="cascade, delete-orphan"), nullable=False)
-    domain = relationship("Domain")
-
-    # dont know the type
-
-    def __repr__(self):
-        return """<tb_searchdomain> search_domain: %s"""% (self.search_domain)
 
 class Template(db.Model):
     __tablename__ = "tb_template"
     id = db.Column(Integer, primary_key=True)
     domain_id = db.Column(Integer(), ForeignKey("tb_domain.id",
-        ondelete="cascade, delete-orphan"), nullable=False, unique=True)
+        ondelete="cascade"), nullable=False, unique=True)
     domain = relationship("Domain")
     template = db.Column(String(64), nullable=False)
     version = db.Column(String(64), nullable=True)
+    theme = db.Column(String(64), nullable=True)
+    date_searched = db.Column(DateTime(), nullable=False, default=datetime.now)
 
     def __repr__(self):
         return \
         """<tb_searchdomain> template: %s, version: %s""" \
         % (self.template, self.version)
 
-class WPTheme(db.Model):
-    __tablename__ = "tb_wptheme"
-    id = db.Column(Integer, primary_key=True)
-    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id",
-        ondelete="cascade, delete-orphan"), nullable=False, unique=True)
-    domain = relationship("Domain")
-    date_searched = db.Column(DateTime(), nullable=False, default=datetime.now())
-    theme = db.Column(String(64))
-
-    def __repr__(self):
-        return \
-        """<tb_searchdomain> template: %s, version: %s"""\
-        %  (self.date_searched, self.theme)
+#class WPTheme(db.Model):
+#    __tablename__ = "tb_wptheme"
+#    id = db.Column(Integer, primary_key=True)
+#    domain_id = db.Column(Integer(), ForeignKey("tb_domain.id",
+#        ondelete="cascade"), nullable=False, unique=True)
+#    domain = relationship("Domain")
+#    date_searched = db.Column(DateTime(), nullable=False, default=datetime.now())
+#
+#    def __repr__(self):
+#        return \
+#        """<tb_searchdomain> template: %s, version: %s"""\
+#        %  (self.date_searched, self.theme)
 

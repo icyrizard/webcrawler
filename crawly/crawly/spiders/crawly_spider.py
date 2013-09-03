@@ -1,11 +1,12 @@
-## author: Richard Torenvliet
+# author: Richard Torenvliet
 import re
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from crawly.items import CrawlyItem
-from crawly.models import db, Domain, Template, WPTheme
+from crawly.models import db, Domain, Template
 
 def get_urls():
+    """get stored urls from database (tb_domain)"""
     for url in db.session.query(Domain).outerjoin(Template).\
             filter(Template.domain == None).all():
         yield url.url_domain
@@ -21,7 +22,7 @@ class WPCrawlySpider(BaseSpider):
 
     #allowed_domains = ["dmoz.org"]
 
-    #TODO: From database?
+    ## get start urls from database
     start_urls = get_urls()
 
     def _parse_links(self, hxs, item):

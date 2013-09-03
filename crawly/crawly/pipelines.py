@@ -1,5 +1,6 @@
-from models import db, Domain, SearchDomain, Template, WPTheme
+from models import db, Domain, Template
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime
 
 # Define your item pipelines here
 #
@@ -18,11 +19,10 @@ class CrawlyPipeline(object):
         if item['template']:
             dmain = db.session.query(Domain).filter_by(url_domain=item['url_domain']).first()
             if dmain:
-                site_template = Template(domain=dmain, template=item['template'])
+                ## create new template record
+                site_template = Template(domain=dmain, template=item['template'],
+                        theme=item['theme_name'], date_searched=datetime.now())
                 db.session.add(site_template)
-                if item['theme_name']:
-                    site_theme = WPTheme(domain=dmain, theme=item['theme_name'])
-                    db.session.add(site_theme)
                 try:
                     db.session.commit()
                 except IntegrityError:
@@ -39,8 +39,9 @@ class URLPipeline(object):
             return item
         try:
             dmain = Domain(url_domain=item['url'],
-                        search_domain=item['source'],
-                        status_code=item['status'])
+                        start_url=item['source'],
+                        status_code=item['status'],
+                        domain_ext=item['domain_ext'])
             db.session.add(dmain)
             db.session.commit()
         except IntegrityError:

@@ -15,6 +15,7 @@ class URLItem(Item):
     url = Field()
     country_code = Field()
     status = Field()
+    domain_ext = Field()
 
 
 
