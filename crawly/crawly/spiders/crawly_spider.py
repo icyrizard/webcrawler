@@ -78,7 +78,7 @@ class WPCrawlySpider(BaseSpider):
 
         ## set default information
         # set website name to url #TODO, change this?
-        item['url_domain'] = response._get_url()
+        item['url_domain'] = response.url
         item['theme_name'] = None
         item['template'] = False
 

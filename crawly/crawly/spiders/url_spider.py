@@ -33,7 +33,7 @@ class StartpaginaCrawlySpider(CrawlSpider):
         item = URLItem()
 
         item['source'] = self.start_urls[0]
-        item['url'] = response._get_url()
+        item['url'] = response.url
         item['status'] = response.status
         item['domain_ext'] = self.domain_ext
 

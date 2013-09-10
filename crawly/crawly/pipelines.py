@@ -1,3 +1,4 @@
+import re
 from models import db, Domain, Template
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -31,11 +32,20 @@ class CrawlyPipeline(object):
 
 class URLPipeline(object):
     """store information about source urls to be processed by other spiders"""
+
+    subdomain_regex = re.compile(r"^http://((([^w])([a-zA-Z0-9-])+)|(w[^w][a-zA-Z0-9-]*)|(ww[^w]([a-zA-Z0-9-])*))\.([a-zA-Z0-9-])+\.(nl)(/)?$")
     def __init__(self):
         pass
 
+    def is_subdomain(self, url):
+       return re.match(self.subdomain_regex, url)
+
     def process_item(self, item, spider):
         if 'URLPipeline' not in getattr(spider, "pipelines"):
+            return item
+
+        if self.is_subdomain(item['url']):
+            print 'subdomain: ', item['url']
             return item
         try:
             dmain = Domain(url_domain=item['url'],
@@ -45,6 +55,5 @@ class URLPipeline(object):
             db.session.add(dmain)
             db.session.commit()
         except IntegrityError:
-            print 'fail'
             db.session.rollback()
         return item

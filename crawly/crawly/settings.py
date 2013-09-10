@@ -43,4 +43,4 @@ DATABASE_LIST = {
 }
 
 # use the name of the database in DATABASE_LIST
-DATABASE = "homepc"
+DATABASE = "development"
